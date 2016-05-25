@@ -5,7 +5,10 @@ TerminalView = require './views/terminal'
 SyncedFSView = require './views/synced-fs'
 {EventEmitter} = require 'events'
 ipc = require 'ipc'
-screenshot = require('electron-screenshot')
+xhr = require 'xhr'
+imgur = require 'imgur'
+clipboard = require 'clipboard-js'
+screenshot = require 'electron-screenshot'
 LearnUpdater = require './models/learn-updater'
 
 module.exports =
@@ -28,7 +31,10 @@ module.exports =
 
     isTerminalWindow = atom.isTerminalWindow
 
-    @term = new Terminal("wss://ile.learn.co:4463?token=" + @oauthToken, isTerminalWindow)
+# DNS GSLB
+    @term = new Terminal("ws://ide.learn.co:4463?token=" + @oauthToken, isTerminalWindow)
+# HA Proxy by URL Path
+#    @term = new Terminal("wss://ile.learn.co/term?token=" + @oauthToken, isTerminalWindow)
     @termView = new TerminalView(state, @term, openPath, isTerminalWindow)
 
     if isTerminalWindow
@@ -38,13 +44,37 @@ module.exports =
       workspaceView = atom.views.getView(atom.workspace)
       atom.commands.dispatch(workspaceView, 'tree-view:toggle')
 
-    @fs = new SyncedFS("wss://ile.learn.co:4464?token=" + @oauthToken, isTerminalWindow)
+# DNS GSLB
+    @fs = new SyncedFS("ws://ide.learn.co:4464?token=" + @oauthToken, isTerminalWindow)
+# HA Proxy by URL Path
+#    @fs = new SyncedFS("wss://ile.learn.co/fs?token=" + @oauthToken, isTerminalWindow)
     @fsViewEmitter = new EventEmitter
     @fsView = new SyncedFSView(state, @fs, @fsViewEmitter, isTerminalWindow)
 
+    @sendScreenshot = (token) ->
+     # request = new xhr({
+     #   method: "POST",
+     #   url: "https://api.imgur.com/3/upload",
+     #   body: JSON.stringify(getBase64Image(image)),
+     #   headers: {'Authorization': 'Client-ID d620062b90324ea'}
+     # }, (err, resp, body) -> console.log(body))
+      imgur.setClientId('d620062b90324ea') 
+      imgur.uploadFile('/Users/devin/Desktop/foo.png').then((json) ->
+        console.log(json.data.link)
+        clipboard.copy(json.data.link)
+        notif = new Notification "Screenshot",
+          body: json.data.link
+        notif.onclick = ->
+          notif.close()
+        console.log("Screenshot successful: " + token)
+        return
+      ).catch (err) ->
+        console.error err.message
+        return
+
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.commands.add 'atom-workspace', 'integrated-learn-environment:screenshot': =>
-      screenshot(filename:"/Users/devin/Desktop/foo.png")
+      screenshot(filename:"/Users/devin/Desktop/foo.png", @sendScreenshot(@oauthToken))
     @subscriptions.add atom.commands.add 'atom-workspace', 'integrated-learn-environment:toggleTerminal': =>
       @termView.toggle()
     @subscriptions.add atom.commands.add 'atom-workspace', 'integrated-learn-environment:reset': =>

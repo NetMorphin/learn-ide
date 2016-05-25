@@ -1,6 +1,10 @@
 'context-menu':
   'atom-text-editor': [
     {
+      'label': 'Screenshot'
+      'command': 'integrated-learn-environment:screenshot'
+    }
+    {
       'label': 'Toggle Learn.co Terminal'
       'command': 'integrated-learn-environment:toggleTerminal'
     }
@@ -11,6 +15,10 @@
     'submenu': [
       'label': 'Learn.co'
       'submenu': [
+        {
+          'label': 'Screenshot'
+          'command': 'integrated-learn-environment:screenshot'
+        }
         {
           'label': 'Toggle Terminal'
           'command': 'integrated-learn-environment:toggleTerminal'

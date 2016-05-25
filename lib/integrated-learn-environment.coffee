@@ -5,6 +5,7 @@ TerminalView = require './views/terminal'
 SyncedFSView = require './views/synced-fs'
 {EventEmitter} = require 'events'
 ipc = require 'ipc'
+screenshot = require('electron-screenshot')
 LearnUpdater = require './models/learn-updater'
 
 module.exports =
@@ -21,7 +22,6 @@ module.exports =
 
   activate: (state) ->
     @oauthToken = atom.config.get('integrated-learn-environment.oauthToken')
-    @progressBarPopup = null
     openPath = atom.blobStore.get('learnOpenUrl', 'learn-open-url-key')
     atom.blobStore.delete('learnOpenUrl')
     atom.blobStore.save()
@@ -43,6 +43,8 @@ module.exports =
     @fsView = new SyncedFSView(state, @fs, @fsViewEmitter, isTerminalWindow)
 
     @subscriptions = new CompositeDisposable
+    @subscriptions.add atom.commands.add 'atom-workspace', 'integrated-learn-environment:screenshot': =>
+      screenshot(filename:"/Users/devin/Desktop/foo.png")
     @subscriptions.add atom.commands.add 'atom-workspace', 'integrated-learn-environment:toggleTerminal': =>
       @termView.toggle()
     @subscriptions.add atom.commands.add 'atom-workspace', 'integrated-learn-environment:reset': =>
@@ -52,10 +54,6 @@ module.exports =
     @subscriptions.add atom.commands.add 'atom-workspace', 'application:update-ile': =>
       updater = new LearnUpdater
       updater.checkForUpdate()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'core:copy': =>
-      @termView.copy()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'core:paste': =>
-      @termView.paste()
 
     @passingIcon = 'http://i.imgbox.com/pAjW8tY1.png'
     @failingIcon = 'http://i.imgbox.com/vVZZG1Gx.png'
@@ -77,26 +75,6 @@ module.exports =
 
     ipc.on 'in-app-notification', (notifData) =>
       atom.notifications['add' + notifData.type.charAt(0).toUpperCase() + notifData.type.slice(1)] notifData.message, {detail: notifData.detail, dismissable: notifData.dismissable}
-
-    ipc.on 'progress-bar-update', (value) =>
-      atom.getCurrentWindow().setProgressBar(value)
-
-      if !@progressBarPopup
-        progressBarContainer = document.createElement 'div'
-        progressBarInnerDiv = document.createElement 'div'
-        progressBarInnerDiv.className = 'w3-progress-container w3-round-xlarge w3-dark-grey'
-        progressBar = document.createElement 'div'
-        progressBar.className = 'learn-progress-bar w3-progressbar w3-round-xlarge w3-green'
-        progressBarInnerDiv.appendChild progressBar
-        progressBarContainer.appendChild progressBarInnerDiv
-
-        @progressBarPopup = atom.workspace.addModalPanel item: progressBarContainer
-
-      if value >= 0 && value < 1
-        @progressBarPopup.item.getElementsByClassName('learn-progress-bar')[0].setAttribute 'style', 'width:' + value * 100 + '%;'
-      else
-        @progressBarPopup.destroy()
-        @progressBarPopup = null
 
     @fsViewEmitter.on 'toggleTerminal', (focus) =>
       @termView.toggle(focus)

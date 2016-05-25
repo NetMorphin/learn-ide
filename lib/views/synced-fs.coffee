@@ -5,6 +5,7 @@ module.exports =
 class SyncedFSView extends View
   @content: ->
     @div class: 'learn-synced-fs-status', =>
+      @div class: 'learn-screenshot inline-block icon-device-camera', id: 'learn-screenshot'
       @div class: 'learn-status-icon inline-block icon-terminal', id: 'learn-status-icon', ' Learn'
       @div class: 'learn-popout-terminal-icon inline-block icon-link-external', id: 'learn-popout-terminal-icon'
 
@@ -38,6 +39,10 @@ class SyncedFSView extends View
         @termPoppedOut = 0
         @togglePopoutIcon()
 
+    @screenshotIcon().addEventListener 'click', =>
+      workspaceView = atom.views.getView(atom.workspace)
+      atom.commands.dispatch(workspaceView, 'integrated-learn-environment:screenshot')
+
     @popoutIcon().addEventListener 'click', =>
       if @termPoppedOut == 0
         workspaceView = atom.views.getView(atom.workspace)
@@ -55,6 +60,9 @@ class SyncedFSView extends View
     else
       @popoutIcon().classList.remove('active')
       @popoutIcon().classList.add('inactive')
+
+  screenshotIcon: =>
+    @element.getElementsByClassName('learn-screenshot')[0]
 
   statusIcon: =>
     @element.getElementsByClassName('learn-status-icon')[0]

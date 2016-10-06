@@ -9,7 +9,7 @@
     "start": "./node_modules/gulp/bin/gulp.js"
   },
   "keywords": [],
-  "repository": "https://github.com/flatiron-labs/integrated-learn-environment",
+  "repository": "https://github.com/learn-co/mastermind",
   "license": "Pending",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"

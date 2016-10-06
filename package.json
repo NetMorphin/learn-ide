@@ -33,7 +33,7 @@
     "rimraf": "2.1",
     "rmdir": "1.2.0",
     "single-socket": "0.0.6",
-    "term.js": "learn-co/term.js",
+    "learn-term.js": "0.0.7",
     "underscore-plus": "1.6.6",
     "utf8": "2.1.1"
   },

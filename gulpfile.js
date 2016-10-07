@@ -65,12 +65,12 @@ gulp.task('inject-packages', function() {
     fs.writeFileSync(packageJSON, JSON.stringify(packages, null, '  '))
   }
 
-  injectPackage('learn-ide', '0.0.1')
-  injectPackage('learn-ide-tree', '0.0.1')
+  injectPackage('mastermind', '0.0.3')
+  injectPackage('mirage', '0.0.2')
 })
 
 gulp.task('build', function(done) {
-  runSequence('reset', 'download-atom', 'build-atom', done)
+  runSequence('reset', 'download-atom', 'inject-packages', 'build-atom', done)
 })
 
 gulp.task('clone', function() {

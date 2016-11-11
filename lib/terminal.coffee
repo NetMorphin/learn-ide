@@ -21,33 +21,33 @@ module.exports = class Terminal extends EventEmitter
 
   connect: (token) ->
     @waitForSocket = new Promise (resolve, reject) =>
-      @socket = new SingleSocket @url(),
-        spawn: atomHelper.spawn
-        silent: true
-        logFile: path.join(atom.getConfigDirPath(), 'learn-ide.log')
+      @socket = new WebSocket @url()
+      console.log(@url())
+      console.log(@socket)
 
-      @socket.on 'open', =>
-        logger.info('term:open')
+      @socket.onopen = =>
+        console.log('term:open')
         @isConnected = true
         @hasFailed = false
         @emit 'open'
         resolve()
 
-      @socket.on 'message', (msg) =>
-        logger.info('term:msg', {msg: msg})
-        @emit 'message', utf8.decode(window.atob(msg))
+      @socket.onmessage = (msg) =>
+        console.log(msg.data)
+        console.log('term:msg', {msg: msg})
+        @emit 'message', utf8.decode(window.atob(msg.data))
 
-      @socket.on 'close', () =>
+      @socket.onclose = =>
         @isConnected = false
         @hasFailed = true
         @emit 'close'
         logger.info('term:close')
 
-      @socket.on 'error', (e) =>
+      @socket.onerror = (e) =>
         @isConnected = false
         @hasFailed = true
         @emit 'error', e
-        logger.error('term:error', {debug: @debugInfo(), error: e})
+        console.log('term:error', {debug: @debugInfo(), error: e})
         reject(e)
 
   url: ->

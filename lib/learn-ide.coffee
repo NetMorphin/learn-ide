@@ -14,10 +14,22 @@ remote = require 'remote'
 BrowserWindow = remote.require('browser-window')
 logger = require './logger'
 
+
+createBus = require 'page-bus'
+testBus = createBus()
+
 module.exports =
   token: require('./token')
 
   activate: (state) ->
+    testBus.on 'testing', (pid) ->
+      console.log('msg over emitter')
+      console.log(pid)
+
+    setInterval =>
+      testBus.emit('testing', process.pid)
+    , 1000
+
     logger.info('activating learn ide')
     @disableFormerPackage()
     @waitForAuth = auth().then =>

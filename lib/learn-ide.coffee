@@ -86,6 +86,7 @@ module.exports =
       'learn-ide:toggle-focus': => @termView.toggleFocus()
       'learn-ide:logout': => @logout()
       'learn-ide:reset': => @term.reset()
+      'learn-ide:toggle-debugger': => @term.toggleDebugger()
       'application:update-ile': -> (new Updater).checkForUpdate()
 
     # Listen for connection updates from the learn-ide-tree package, as

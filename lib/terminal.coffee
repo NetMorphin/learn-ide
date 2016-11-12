@@ -39,6 +39,8 @@ module.exports = class Terminal extends EventEmitter
       @socket.on 'error', (e) =>
         @emit 'error', e
 
+      window.socket = @socket
+
   url: ->
     protocol = if @port == 443 then 'wss' else 'ws'
     "#{protocol}://#{@host}:#{@port}/#{@path}?token=#{@token}"
@@ -46,6 +48,9 @@ module.exports = class Terminal extends EventEmitter
   reset: ->
     logger.info('term:reset')
     @socket.reset()
+
+  toggleDebugger: () ->
+    @socket.toggle()
 
   send: (msg) ->
     @socket.send(msg)

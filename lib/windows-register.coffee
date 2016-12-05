@@ -8,10 +8,10 @@ regConfig = [
 ]
 
 
-regConfig.forEach (reg) ->
-  reg = new Registry({hive: Registry.HKCR, key: reg.key})
+regConfig.forEach (config) ->
+  reg = new Registry({hive: Registry.HKCR, key: config.key})
 
   reg.create(->
-    reg.set reg.name, Registry.REG_SZ, reg.value, ->
-      console.log("Registered key #{reg.key}: #{reg.name}: #{reg.value}")
+    reg.set config.name, Registry.REG_SZ, config.value, ->
+      console.log("Registered key #{config.key}: #{config.name}: #{config.value}")
   )

@@ -151,7 +151,7 @@ module.exports =
 
   registerWindowsProtocol: ->
     if process.platform == 'win32'
-      require('./windows-registry').registerProtocol()
+      require('./protocol')
 
   disableFormerPackage: ->
     ilePkg = atom.packages.loadPackage('integrated-learn-environment')

@@ -8,7 +8,7 @@ regConfig = [
 ]
 
 
-regKeys.forEach (reg) ->
+regConfig.forEach (reg) ->
   reg = new Registry({hive: Registry.HKCR, key: reg.key})
 
   reg.create(->

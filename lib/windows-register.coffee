@@ -1,10 +1,8 @@
-ProtocolRegistration = require './protocol-registration'
+Registry = require 'winreg'
 
-new ProtocolRegistration('\\learn-ide',
-  [
-    {name: '', 'URL:Learn IDE Protocol'},
-    {name: 'URL Protocol', value: ''},
-    {key: 'shell\\open\\command', name: '', value: process.execPath}
-  ]
-).register =>
-  console.log('registered key')
+reg = new Registry({hive: Registry.HKCR, key: 'learn-ide'})
+
+reg.create(->
+  reg.set 'test', Registory.REG_SZ, 'wutang', ->
+    console.log('registered')
+)

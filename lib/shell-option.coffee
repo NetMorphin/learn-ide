@@ -6,7 +6,7 @@ class ProtocolRegistration
     @parts = parts
 
   isRegistered: (callback) =>
-    new Registry({hive: 'HKCR', key: "#{@key}\\#{@parts[0].key}"})
+    new Registry({hive: Registry.HKCR, key: "#{@key}\\#{@parts[0].key}"})
       .get @parts[0].name, (err, val) =>
         callback(not err? and val? and val.value is @parts[0].value)
 

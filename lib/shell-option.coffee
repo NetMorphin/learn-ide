@@ -1,4 +1,4 @@
-Registy = require 'winreg'
+Registry = require 'winreg'
 
 class ProtocolRegistration
   constructor: (key, parts) ->

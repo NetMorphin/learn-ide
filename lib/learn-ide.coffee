@@ -23,6 +23,7 @@ module.exports =
     @checkForV1WindowsInstall()
     @registerWindowsProtocol()
     @disableFormerPackage()
+    @configureTheme()
 
     @subscriptions = new CompositeDisposable
     @subscribeToLogin()
@@ -185,4 +186,24 @@ module.exports =
 
   about: ->
     shell.openExternal(ABOUT_URL)
+
+  configureTheme: ->
+    if localStorage.get('didConfigureMaterialUI')
+      return
+
+    pkg = atom.packages.loadPackage('atom-material-ui')
+    if not pkg?
+      return
+
+    isCommunityInstalled = false #theme.path.includes(atom.getConfigDirectory())
+    if not isCommunityInstalled
+      pkg.activate().then ->
+        atom.config.set('atom-material-ui.colors.abaseColor', '#00BCE1')
+        atom.config.set('atom-material-ui.colors.accentColor', '#FFF')
+        atom.config.set('atom-material-ui.ui.panelContrast', 'true')
+        atom.config.set('atom-material-ui.ui.panelShadows', 'true')
+        atom.config.set('atom-material-ui.tabs.compactTabs', 'true')
+        atom.config.set('atom-material-ui.treeView.compactList', 'true')
+        localStorage.set('didConfigureMaterialUI', Date.now())
+
 

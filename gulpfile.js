@@ -254,7 +254,16 @@ gulp.task('alter-files', function() {
     [
       'openEmptyEditorOnStart: {\n        description: \'Automatically open an empty editor on startup.\',\n        type: \'boolean\',\n        default: true\n      }',
       'openEmptyEditorOnStart: {\n        description: \'Automatically open an empty editor on startup.\',\n        type: \'boolean\',\n        default: false\n      }'
+    ],
+    [
+      '[\'one-dark-ui\', \'one-dark-syntax\']',
+      '[\'atom-material-ui\', \'atom-material-syntax\']'
     ]
+  ]);
+
+  var configs = fs.readFileSync(path.join('resources', 'dependency-configs.json')).toString();
+  replaceInFile(path.join(buildDir, 'src', 'config.coffee'), [
+    ['CSON.writeFileSync(@configFilePath, {})', `CSON.writeFileSync(@configFilePath, ${configs.replace(/\s/g, '')})`]
   ]);
 })
 

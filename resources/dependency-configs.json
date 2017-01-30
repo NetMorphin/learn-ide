@@ -1,0 +1,20 @@
+{
+  "*": {
+    "atom-material-ui": {
+      "colors": {
+        "abaseColor": "#00BCE1",
+        "accentColor": "#FFF"
+      },
+      "ui": {
+        "panelContrast": "true",
+        "panelShadows": "true"
+      },
+      "tabs": {
+        "compactTabs": "true"
+      },
+      "treeView": {
+        "compactList": "true"
+      }
+    }
+  }
+}
